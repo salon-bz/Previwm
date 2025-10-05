@@ -1,134 +1,125 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor HTML + CSS + JS con Vista Previa</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(120deg, #00ffcc, #0066ff, #ff00ff);
-      background-size: 400% 400%;
-      animation: gradient 12s ease infinite;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    @keyframes gradient {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-    header {
-      padding: 10px 20px;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-    header h1 {
-      font-size: 1.1rem;
-      margin: 0;
-    }
-    .controls {
-      display: flex;
-      gap: 10px;
-    }
-    button {
-      background: linear-gradient(90deg, #00ffcc, #0066ff);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #000;
-      transition: 0.2s;
-    }
-    button:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      flex: 1;
-      overflow: hidden;
-    }
-    .editors {
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      background: rgba(0,0,0,0.4);
-      overflow-y: auto;
-    }
-    .editors textarea {
-      width: 100%;
-      height: 33%;
-      margin-bottom: 10px;
-      resize: none;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 6px;
-      padding: 8px;
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: #fff;
-    }
-    footer {
-      background: rgba(0,0,0,0.4);
-      text-align: center;
-      padding: 5px;
-      font-size: 0.8rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Editor Pro HTML + CSS + JS</title>
+<style>
+  body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(120deg, #00ffcc, #0066ff, #ff00ff);
+    background-size: 400% 400%;
+    animation: gradient 10s ease infinite;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+  }
+  @keyframes gradient {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  header {
+    background: rgba(0,0,0,0.5);
+    padding:10px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  header h1 {
+    font-size:1rem;
+    margin:0;
+  }
+  .controls {display:flex;gap:8px;}
+  button {
+    background: linear-gradient(90deg, #00ffcc, #0066ff);
+    border:none;
+    padding:8px 12px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:600;
+    color:#000;
+    transition:0.2s;
+  }
+  button:hover {transform:scale(1.05);opacity:0.9;}
+  .container {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    flex:1;
+    overflow:hidden;
+  }
+  .editors {
+    display:flex;
+    flex-direction:column;
+    background:rgba(0,0,0,0.4);
+    padding:10px;
+  }
+  .editors label {
+    font-weight:bold;
+    margin-top:8px;
+  }
+  textarea {
+    width:100%;
+    height:33%;
+    resize:none;
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:6px;
+    padding:8px;
+    font-family:monospace;
+    font-size:0.9rem;
+  }
+  iframe {
+    width:100%;
+    height:100%;
+    border:none;
+    background:#fff;
+  }
+  footer {
+    background:rgba(0,0,0,0.5);
+    text-align:center;
+    padding:5px;
+    font-size:0.8rem;
+  }
+</style>
 </head>
 <body>
   <header>
-    <h1>🧩 Editor HTML + CSS + JS</h1>
+    <h1>💡 Editor Pro HTML + CSS + JS</h1>
     <div class="controls">
-      <button id="previewBtn">Ver Vista Previa</button>
-      <button id="clearBtn">Borrar Todo</button>
-      <button id="downloadBtn">Descargar HTML</button>
+      <button id="previewBtn">Vista Previa</button>
+      <button id="clearBtn">Borrar</button>
+      <button id="downloadBtn">Descargar</button>
     </div>
   </header>
 
   <div class="container">
     <div class="editors">
       <label>HTML:</label>
-      <textarea id="htmlCode" placeholder="Escribe tu código HTML aquí..."></textarea>
+      <textarea id="htmlCode" placeholder="Escribe tu HTML aquí..."></textarea>
       <label>CSS:</label>
-      <textarea id="cssCode" placeholder="Escribe tu código CSS aquí..."></textarea>
+      <textarea id="cssCode" placeholder="Escribe tu CSS aquí..."></textarea>
       <label>JavaScript:</label>
-      <textarea id="jsCode" placeholder="Escribe tu código JS aquí..."></textarea>
+      <textarea id="jsCode" placeholder="Escribe tu JavaScript aquí..."></textarea>
     </div>
     <iframe id="preview"></iframe>
   </div>
 
-  <footer>Hecho con ❤️ por GPT-5 | Vista previa y descarga unificada</footer>
+  <footer>Creado con ❤️ | Compatible con WebIntoApp | GPT-5</footer>
 
   <script>
-    const htmlInput = document.getElementById("htmlCode");
-    const cssInput = document.getElementById("cssCode");
-    const jsInput = document.getElementById("jsCode");
-    const previewFrame = document.getElementById("preview");
-    const previewBtn = document.getElementById("previewBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const downloadBtn = document.getElementById("downloadBtn");
+    const htmlCode = document.getElementById('htmlCode');
+    const cssCode = document.getElementById('cssCode');
+    const jsCode = document.getElementById('jsCode');
+    const previewFrame = document.getElementById('preview');
 
-    // Mostrar vista previa
-    previewBtn.addEventListener("click", () => {
-      const html = htmlInput.value;
-      const css = "<style>" + cssInput.value + "</style>";
-      const js = "<script>" + jsInput.value + "<\/script>";
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      const html = htmlCode.value;
+      const css = "<style>" + cssCode.value + "</style>";
+      const js = "<script>" + jsCode.value + "<\/script>";
       const finalCode = html + css + js;
       const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
       doc.open();
@@ -136,12 +127,11 @@
       doc.close();
     });
 
-    // Borrar todo
-    clearBtn.addEventListener("click", () => {
-      if (confirm("¿Seguro que deseas borrar todo el código?")) {
-        htmlInput.value = "";
-        cssInput.value = "";
-        jsInput.value = "";
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm("¿Borrar todo el código?")) {
+        htmlCode.value = "";
+        cssCode.value = "";
+        jsCode.value = "";
         const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
         doc.open();
         doc.write("");
@@ -149,11 +139,10 @@
       }
     });
 
-    // Descargar como archivo HTML completo
-    downloadBtn.addEventListener("click", () => {
-      const html = htmlInput.value;
-      const css = "<style>" + cssInput.value + "</style>";
-      const js = "<script>" + jsInput.value + "<\/script>";
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      const html = htmlCode.value;
+      const css = "<style>" + cssCode.value + "</style>";
+      const js = "<script>" + jsCode.value + "<\/script>";
       const finalHTML = `
 <!DOCTYPE html>
 <html lang="es">
@@ -169,15 +158,33 @@ ${js}
 </body>
 </html>
 `;
-      const blob = new Blob([finalHTML], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "proyecto.html";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+
+      try {
+        // Intentar guardar directamente en almacenamiento (para PWA o WebIntoApp)
+        if ('showSaveFilePicker' in window) {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: 'proyecto.html',
+            types: [{ description: 'HTML file', accept: {'text/html': ['.html']} }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(finalHTML);
+          await writable.close();
+          alert("✅ Archivo guardado en tu almacenamiento local.");
+        } else {
+          // Fallback normal (descarga)
+          const blob = new Blob([finalHTML], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'proyecto.html';
+          a.click();
+          URL.revokeObjectURL(url);
+          alert("✅ Archivo descargado.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ Error al guardar el archivo: " + err.message);
+      }
     });
   </script>
 </body>
