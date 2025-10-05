@@ -1,67 +1,121 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Editor con Vista Previa</title>
   <style>
+    /* ----------------------------------------
+       Colores animados (RGB suaves y cambiantes)
+       ---------------------------------------- */
     :root {
       --bg: #0d1117;
       --text: #e6edf3;
-      --accent: #00ffcc;
+      --accent-fallback: #00ffcc;
     }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+
+    /* Fondo con gradiente animado (suave cambio de colores RGB) */
+    body{
+      margin:0;
+      font-family:'Segoe UI', sans-serif;
+      color:var(--text);
+      display:flex;
+      flex-direction:column;
+      height:100vh;
+
+      /* degradado animado */
+      background: linear-gradient(120deg,
+        rgba(0,255,204,0.08),
+        rgba(102,51,255,0.06),
+        rgba(255,85,85,0.05),
+        rgba(0,170,255,0.04)
+      );
+      background-size: 400% 400%;
+      animation: gradientBG 18s ease infinite;
     }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      25% { background-position: 50% 0%; }
+      50% { background-position: 100% 50%; }
+      75% { background-position: 50% 100%; }
+      100% { background-position: 0% 50%; }
+    }
+
     header {
-      background: #161b22;
+      background: rgba(10,12,15,0.65);
       padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid var(--accent);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom: 2px solid transparent;
+      /* borde con animación de color */
+      background-image: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
+
+    /* Título con texto relleno por gradiente animado */
     header h1 {
-      font-size: 1.1rem;
-      color: var(--accent);
-      margin: 0;
+      font-size:1.1rem;
+      margin:0;
+      font-weight:700;
+      background: conic-gradient(from 90deg, #00ffcc, #4d4dff, #ff5a5a, #00d1ff, #00ffcc);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: accentShift 6s linear infinite;
     }
+
+    @keyframes accentShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .controls {
-      display: flex;
-      gap: 10px;
+      display:flex;
+      gap:10px;
     }
+
+    /* Botones con degradado RGB animado */
     button {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
+      background: linear-gradient(90deg, rgba(0,255,204,0.95), rgba(77,77,255,0.95));
+      border:none;
+      padding:8px 12px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:700;
+      color:#000;
+      transition: transform .12s ease, opacity .12s;
+      background-size: 200% 200%;
+      animation: btnGradient 6s ease infinite;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 -2px 6px rgba(255,255,255,0.06);
     }
-    button:hover {
-      opacity: 0.8;
+    button:hover { transform: translateY(-2px); opacity:0.95; }
+
+    @keyframes btnGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
+
     #editor {
-      flex: 1;
-      width: 100%;
-      padding: 15px;
-      box-sizing: border-box;
+      flex:1;
+      width:100%;
+      padding:15px;
+      box-sizing:border-box;
       font-family: monospace;
-      font-size: 1rem;
-      background: #0a0f14;
+      font-size:1rem;
+      background: rgba(2,6,10,0.6);
       color: var(--text);
       border: none;
       outline: none;
       resize: none;
+      caret-color: #00ffd1;
     }
+
+    /* Contenedor preview en full screen (sigue igual funcionalmente) */
     #previewContainer {
       display: none;
       position: fixed;
@@ -70,21 +124,72 @@
       z-index: 999;
       flex-direction: column;
     }
+
     #previewFrame {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: white;
+      flex:1;
+      width:100%;
+      border:none;
+      background:white;
     }
+
     #backBtn {
-      background: var(--accent);
-      color: #000;
-      padding: 12px;
-      font-weight: bold;
-      border: none;
-      border-radius: 0;
-      cursor: pointer;
-      width: 100%;
+      background: linear-gradient(90deg, rgba(255,130,130,0.95), rgba(0,220,255,0.95));
+      color:#000;
+      padding:12px;
+      font-weight:bold;
+      border:none;
+      border-radius:0;
+      cursor:pointer;
+      width:100%;
+      background-size:200% 200%;
+      animation: btnGradient 6s ease infinite;
+    }
+
+    /* Lista de códigos guardados (manteniendo estructura previa) */
+    #savedList {
+      background: rgba(8,10,12,0.6);
+      border-top: 1px solid rgba(255,255,255,0.03);
+      padding:10px;
+      max-height:200px;
+      overflow-y:auto;
+      box-sizing: border-box;
+    }
+    #savedList h3 {
+      margin:0 0 10px 0;
+      color: #e6edf3;
+      font-size:1rem;
+    }
+    .savedItem {
+      display:flex;
+      justify-content:space-between;
+      background: rgba(12,16,20,0.7);
+      padding:8px 10px;
+      border-radius:6px;
+      margin-bottom:6px;
+      align-items:center;
+      border-left: 4px solid rgba(255,255,255,0.02);
+    }
+    .savedItem span {
+      color:var(--text);
+      font-size:0.9rem;
+      flex:1;
+      margin-right:8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .savedItem button {
+      margin-left:5px;
+      padding:5px 8px;
+      font-size:0.8rem;
+      border-radius:5px;
+    }
+
+    /* Responsive pequeño */
+    @media (max-width:700px) {
+      header { padding:8px; }
+      button { padding:7px 10px; font-size:0.9rem; }
+      #savedList { max-height:140px; padding:8px; }
     }
   </style>
 </head>
@@ -93,11 +198,17 @@
     <h1>📄 Editor y Vista Previa</h1>
     <div class="controls">
       <button id="previewBtn">Ver Preview</button>
+      <button id="saveBtn">Guardar Código</button>
       <button id="clearBtn">Borrar Código</button>
     </div>
   </header>
 
   <textarea id="editor" placeholder="Pega tu código HTML, CSS o JS aquí..."></textarea>
+
+  <div id="savedList">
+    <h3>💾 Códigos guardados</h3>
+    <div id="savedItems"></div>
+  </div>
 
   <div id="previewContainer">
     <button id="backBtn">🔙 Volver al editor</button>
@@ -107,11 +218,17 @@
   <script>
     const editor = document.getElementById('editor');
     const previewBtn = document.getElementById('previewBtn');
+    const saveBtn = document.getElementById('saveBtn');
     const clearBtn = document.getElementById('clearBtn');
     const previewContainer = document.getElementById('previewContainer');
     const previewFrame = document.getElementById('previewFrame');
     const backBtn = document.getElementById('backBtn');
+    const savedItems = document.getElementById('savedItems');
 
+    // Cargar los guardados al inicio
+    document.addEventListener('DOMContentLoaded', loadSavedCodes);
+
+    // Mostrar vista previa
     previewBtn.addEventListener('click', () => {
       const code = editor.value;
       const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
@@ -125,11 +242,88 @@
       previewContainer.style.display = 'none';
     });
 
+    // Borrar código
     clearBtn.addEventListener('click', () => {
       if (confirm("¿Seguro que quieres borrar todo el código?")) {
         editor.value = '';
       }
     });
+
+    // Guardar código en localStorage
+    saveBtn.addEventListener('click', () => {
+      let code = editor.value.trim();
+      if (!code) return alert("No hay código para guardar.");
+
+      // Intentar detectar título
+      let autoName = "Sin título";
+      const titleMatch = code.match(/<title>(.*?)<\/title>/i);
+      const h1Match = code.match(/<h1[^>]*>(.*?)<\/h1>/i);
+      if (titleMatch) autoName = titleMatch[1];
+      else if (h1Match) autoName = h1Match[1];
+
+      let name = prompt("Nombre para guardar:", autoName);
+      if (!name) return;
+
+      let saved = JSON.parse(localStorage.getItem("savedCodes") || "[]");
+      saved.push({ name, code });
+      localStorage.setItem("savedCodes", JSON.stringify(saved));
+
+      loadSavedCodes();
+      alert("✅ Código guardado como: " + name);
+    });
+
+    // Cargar y mostrar lista de códigos guardados
+    function loadSavedCodes() {
+      savedItems.innerHTML = "";
+      const saved = JSON.parse(localStorage.getItem("savedCodes") || "[]");
+      saved.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "savedItem";
+        div.innerHTML = `
+          <span title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
+          <div>
+            <button onclick="loadCode(${index})">Cargar</button>
+            <button onclick="previewSaved(${index})">Ver</button>
+            <button onclick="deleteCode(${index})">❌</button>
+          </div>
+        `;
+        savedItems.appendChild(div);
+      });
+    }
+
+    // Escapar texto simple para title/tooltip (evita romper HTML en la lista)
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Funciones globales para manejar guardados
+    window.loadCode = function(index) {
+      const saved = JSON.parse(localStorage.getItem("savedCodes") || "[]");
+      editor.value = saved[index].code;
+      alert("📥 Código cargado: " + saved[index].name);
+    }
+
+    window.previewSaved = function(index) {
+      const saved = JSON.parse(localStorage.getItem("savedCodes") || "[]");
+      const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+      doc.open();
+      doc.write(saved[index].code);
+      doc.close();
+      previewContainer.style.display = 'flex';
+    }
+
+    window.deleteCode = function(index) {
+      if (!confirm("¿Eliminar este código guardado?")) return;
+      let saved = JSON.parse(localStorage.getItem("savedCodes") || "[]");
+      saved.splice(index, 1);
+      localStorage.setItem("savedCodes", JSON.stringify(saved));
+      loadSavedCodes();
+    }
   </script>
 </body>
 </html>
