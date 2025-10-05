@@ -7,34 +7,31 @@
 <style>
   body {
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(120deg, #00ffcc, #0066ff, #ff00ff);
-    background-size: 400% 400%;
-    animation: gradient 10s ease infinite;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(120deg,#00ffcc,#0066ff,#ff00ff);
+    background-size:400% 400%;
+    animation:gradient 10s ease infinite;
     color:#fff;
     display:flex;
     flex-direction:column;
     height:100vh;
   }
   @keyframes gradient {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
   }
   header {
-    background: rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.5);
     padding:10px 20px;
     display:flex;
     justify-content:space-between;
     align-items:center;
   }
-  header h1 {
-    font-size:1rem;
-    margin:0;
-  }
-  .controls {display:flex;gap:8px;}
-  button {
-    background: linear-gradient(90deg, #00ffcc, #0066ff);
+  header h1{font-size:1rem;margin:0;}
+  .controls{display:flex;gap:8px;}
+  button{
+    background:linear-gradient(90deg,#00ffcc,#0066ff);
     border:none;
     padding:8px 12px;
     border-radius:5px;
@@ -43,24 +40,11 @@
     color:#000;
     transition:0.2s;
   }
-  button:hover {transform:scale(1.05);opacity:0.9;}
-  .container {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    flex:1;
-    overflow:hidden;
-  }
-  .editors {
-    display:flex;
-    flex-direction:column;
-    background:rgba(0,0,0,0.4);
-    padding:10px;
-  }
-  .editors label {
-    font-weight:bold;
-    margin-top:8px;
-  }
-  textarea {
+  button:hover{transform:scale(1.05);opacity:0.9;}
+  .container{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden;}
+  .editors{display:flex;flex-direction:column;background:rgba(0,0,0,0.4);padding:10px;}
+  .editors label{font-weight:bold;margin-top:8px;}
+  textarea{
     width:100%;
     height:33%;
     resize:none;
@@ -72,18 +56,8 @@
     font-family:monospace;
     font-size:0.9rem;
   }
-  iframe {
-    width:100%;
-    height:100%;
-    border:none;
-    background:#fff;
-  }
-  footer {
-    background:rgba(0,0,0,0.5);
-    text-align:center;
-    padding:5px;
-    font-size:0.8rem;
-  }
+  iframe{width:100%;height:100%;border:none;background:#fff;}
+  footer{background:rgba(0,0,0,0.5);text-align:center;padding:5px;font-size:0.8rem;}
 </style>
 </head>
 <body>
@@ -116,35 +90,30 @@
     const jsCode = document.getElementById('jsCode');
     const previewFrame = document.getElementById('preview');
 
-    document.getElementById('previewBtn').addEventListener('click', () => {
-      const html = htmlCode.value;
-      const css = "<style>" + cssCode.value + "</style>";
-      const js = "<script>" + jsCode.value + "<\/script>";
-      const finalCode = html + css + js;
-      const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-      doc.open();
-      doc.write(finalCode);
-      doc.close();
+    document.getElementById('previewBtn').addEventListener('click',()=>{
+      const html=htmlCode.value;
+      const css="<style>"+cssCode.value+"</style>";
+      const js="<script>"+jsCode.value+"<\/script>";
+      const final=html+css+js;
+      const doc=previewFrame.contentDocument||previewFrame.contentWindow.document;
+      doc.open();doc.write(final);doc.close();
     });
 
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm("¿Borrar todo el código?")) {
-        htmlCode.value = "";
-        cssCode.value = "";
-        jsCode.value = "";
-        const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-        doc.open();
-        doc.write("");
-        doc.close();
+    document.getElementById('clearBtn').addEventListener('click',()=>{
+      if(confirm("¿Borrar todo el código?")){
+        htmlCode.value="";
+        cssCode.value="";
+        jsCode.value="";
+        const doc=previewFrame.contentDocument||previewFrame.contentWindow.document;
+        doc.open();doc.write("");doc.close();
       }
     });
 
-    document.getElementById('downloadBtn').addEventListener('click', async () => {
-      const html = htmlCode.value;
-      const css = "<style>" + cssCode.value + "</style>";
-      const js = "<script>" + jsCode.value + "<\/script>";
-      const finalHTML = `
-<!DOCTYPE html>
+    document.getElementById('downloadBtn').addEventListener('click',()=>{
+      const html=htmlCode.value;
+      const css="<style>"+cssCode.value+"</style>";
+      const js="<script>"+jsCode.value+"<\/script>";
+      const finalHTML=`<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -156,36 +125,48 @@ ${css}
 ${html}
 ${js}
 </body>
-</html>
-`;
+</html>`;
 
       try {
-        // Intentar guardar directamente en almacenamiento (para PWA o WebIntoApp)
-        if ('showSaveFilePicker' in window) {
-          const handle = await window.showSaveFilePicker({
-            suggestedName: 'proyecto.html',
-            types: [{ description: 'HTML file', accept: {'text/html': ['.html']} }]
-          });
-          const writable = await handle.createWritable();
-          await writable.write(finalHTML);
-          await writable.close();
-          alert("✅ Archivo guardado en tu almacenamiento local.");
+        // Detectar si estamos en WebIntoApp o en navegador normal
+        const isWebView = navigator.userAgent.includes("wv") || /WebView|WebIntoApp/i.test(navigator.userAgent);
+
+        if(!isWebView && 'showSaveFilePicker' in window){
+          // navegador moderno
+          saveFileDirect(finalHTML);
         } else {
-          // Fallback normal (descarga)
-          const blob = new Blob([finalHTML], { type: 'text/html' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'proyecto.html';
-          a.click();
-          URL.revokeObjectURL(url);
-          alert("✅ Archivo descargado.");
+          // fallback para WebIntoApp
+          downloadAsFile(finalHTML);
         }
-      } catch (err) {
-        console.error(err);
-        alert("⚠️ Error al guardar el archivo: " + err.message);
+      } catch(e){
+        console.error(e);
+        alert("⚠️ No se pudo guardar el archivo correctamente.");
       }
     });
+
+    async function saveFileDirect(content){
+      const handle = await window.showSaveFilePicker({
+        suggestedName:"proyecto.html",
+        types:[{description:"HTML",accept:{"text/html":[".html"]}}]
+      });
+      const writable = await handle.createWritable();
+      await writable.write(content);
+      await writable.close();
+      alert("✅ Archivo guardado correctamente.");
+    }
+
+    function downloadAsFile(content){
+      const blob = new Blob([content],{type:"text/html"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "proyecto.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("✅ Archivo exportado (ver carpeta Descargas).");
+    }
   </script>
 </body>
 </html>
